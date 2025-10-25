@@ -43,7 +43,7 @@ class JobResult
 public:
     JobResult() = delete;
 
-    inline JobResult(const Job &job, uint64_t nonce, const uint8_t *result, const uint8_t* header_hash = nullptr, const uint8_t *mix_hash = nullptr, const uint8_t* miner_signature = nullptr) :
+    inline JobResult(const Job &job, uint64_t nonce, const uint8_t *result, const uint8_t* header_hash = nullptr, const uint8_t *mix_hash = nullptr, const uint8_t* power_signature = nullptr) :
         algorithm(job.algorithm()),
         index(job.index()),
         clientId(job.clientId()),
@@ -62,9 +62,9 @@ public:
             memcpy(m_mixHash, mix_hash, sizeof(m_mixHash));
         }
 
-        if (miner_signature) {
+        if (power_signature) {
             m_hasMinerSignature = true;
-            memcpy(m_minerSignature, miner_signature, sizeof(m_minerSignature));
+            memcpy(m_minerSignature, power_signature, sizeof(m_minerSignature));
         }
     }
 
@@ -85,7 +85,7 @@ public:
     inline const uint8_t *headerHash() const { return m_headerHash; }
     inline const uint8_t *mixHash() const    { return m_mixHash; }
 
-    inline const uint8_t *minerSignature() const { return m_hasMinerSignature ? m_minerSignature : nullptr; }
+    inline const uint8_t *powerSignature() const { return m_hasMinerSignature ? m_minerSignature : nullptr; }
 
     const Algorithm algorithm;
     const uint8_t index;

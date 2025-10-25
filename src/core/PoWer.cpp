@@ -21,7 +21,7 @@
 #include <thread>
 
 
-#include "core/Miner.h"
+#include "core/PoWer.h"
 #include "core/Taskbar.h"
 #include "3rdparty/rapidjson/document.h"
 #include "backend/common/Hashrate.h"
@@ -73,16 +73,16 @@ namespace xmrig {
 static std::mutex mutex;
 
 
-class MinerPrivate
+class PoWerPrivate
 {
 public:
-    XMRIG_DISABLE_COPY_MOVE_DEFAULT(MinerPrivate)
+    XMRIG_DISABLE_COPY_MOVE_DEFAULT(PoWerPrivate)
 
 
-    inline explicit MinerPrivate(Controller *controller) : controller(controller) {}
+    inline explicit PoWerPrivate(Controller *controller) : controller(controller) {}
 
 
-    inline ~MinerPrivate()
+    inline ~PoWerPrivate()
     {
         delete timer;
 
@@ -340,7 +340,7 @@ public:
 #       endif
 
         LOG_INFO("%s " WHITE_BOLD("speed") " 10s/60s/15m " CYAN_BOLD("%s") CYAN(" %s %s ") CYAN_BOLD("%s") " max " CYAN_BOLD("%s %s") "%s",
-                 Tags::miner(),
+                 Tags::power(),
                  Hashrate::format(speed[0],                 num,          16),
                  Hashrate::format(speed[1],                 num + 16,     16),
                  Hashrate::format(speed[2],                 num + 16 * 2, 16), h,
@@ -390,8 +390,8 @@ public:
 
 
 
-xmrig::Miner::Miner(Controller *controller)
-    : d_ptr(new MinerPrivate(controller))
+xmrig::PoWer::PoWer(Controller *controller)
+    : d_ptr(new PoWerPrivate(controller))
 {
     const int priority = controller->config()->cpu().priority();
     if (priority >= 0) {
@@ -430,37 +430,37 @@ xmrig::Miner::Miner(Controller *controller)
 }
 
 
-xmrig::Miner::~Miner()
+xmrig::PoWer::~PoWer()
 {
     delete d_ptr;
 }
 
 
-bool xmrig::Miner::isEnabled() const
+bool xmrig::PoWer::isEnabled() const
 {
     return d_ptr->enabled;
 }
 
 
-bool xmrig::Miner::isEnabled(const Algorithm &algorithm) const
+bool xmrig::PoWer::isEnabled(const Algorithm &algorithm) const
 {
     return std::find(d_ptr->algorithms.begin(), d_ptr->algorithms.end(), algorithm) != d_ptr->algorithms.end();
 }
 
 
-const xmrig::Algorithms &xmrig::Miner::algorithms() const
+const xmrig::Algorithms &xmrig::PoWer::algorithms() const
 {
     return d_ptr->algorithms;
 }
 
 
-const std::vector<xmrig::IBackend *> &xmrig::Miner::backends() const
+const std::vector<xmrig::IBackend *> &xmrig::PoWer::backends() const
 {
     return d_ptr->backends;
 }
 
 
-xmrig::Job xmrig::Miner::job() const
+xmrig::Job xmrig::PoWer::job() const
 {
     std::lock_guard<std::mutex> lock(mutex);
 
@@ -468,7 +468,7 @@ xmrig::Job xmrig::Miner::job() const
 }
 
 
-void xmrig::Miner::execCommand(char command)
+void xmrig::PoWer::execCommand(char command)
 {
     switch (command) {
     case 'h':
@@ -503,7 +503,7 @@ void xmrig::Miner::execCommand(char command)
 }
 
 
-void xmrig::Miner::pause()
+void xmrig::PoWer::pause()
 {
     d_ptr->active = false;
     d_ptr->m_taskbar.setActive(false);
@@ -513,14 +513,14 @@ void xmrig::Miner::pause()
 }
 
 
-void xmrig::Miner::setEnabled(bool enabled)
+void xmrig::PoWer::setEnabled(bool enabled)
 {
     if (d_ptr->enabled == enabled) {
         return;
     }
 
     if (d_ptr->controller->config()->isPauseOnBattery() && d_ptr->battery_power && enabled) {
-        LOG_INFO("%s " YELLOW_BOLD("can't resume while on battery power"), Tags::miner());
+        LOG_INFO("%s " YELLOW_BOLD("can't resume while on battery power"), Tags::power());
 
         return;
     }
@@ -529,14 +529,14 @@ void xmrig::Miner::setEnabled(bool enabled)
     d_ptr->m_taskbar.setEnabled(enabled);
 
     if (enabled) {
-        LOG_INFO("%s " GREEN_BOLD("resumed"), Tags::miner());
+        LOG_INFO("%s " GREEN_BOLD("resumed"), Tags::power());
     }
     else {
         if (d_ptr->battery_power) {
-            LOG_INFO("%s " YELLOW_BOLD("paused"), Tags::miner());
+            LOG_INFO("%s " YELLOW_BOLD("paused"), Tags::power());
         }
         else {
-            LOG_INFO("%s " YELLOW_BOLD("paused") ", press " MAGENTA_BG_BOLD(" r ") " to resume", Tags::miner());
+            LOG_INFO("%s " YELLOW_BOLD("paused") ", press " MAGENTA_BG_BOLD(" r ") " to resume", Tags::power());
         }
     }
 
@@ -549,7 +549,7 @@ void xmrig::Miner::setEnabled(bool enabled)
 }
 
 
-void xmrig::Miner::setJob(const Job &job, bool donate)
+void xmrig::PoWer::setJob(const Job &job, bool donate)
 {
     for (IBackend *backend : d_ptr->backends) {
         backend->prepare(job);
@@ -615,7 +615,7 @@ void xmrig::Miner::setJob(const Job &job, bool donate)
 }
 
 
-void xmrig::Miner::stop()
+void xmrig::PoWer::stop()
 {
     Nonce::stop();
 
@@ -625,7 +625,7 @@ void xmrig::Miner::stop()
 }
 
 
-void xmrig::Miner::onConfigChanged(Config *config, Config *previousConfig)
+void xmrig::PoWer::onConfigChanged(Config *config, Config *previousConfig)
 {
     d_ptr->rebuild();
 
@@ -641,7 +641,7 @@ void xmrig::Miner::onConfigChanged(Config *config, Config *previousConfig)
 }
 
 
-void xmrig::Miner::onTimer(const Timer *)
+void xmrig::PoWer::onTimer(const Timer *)
 {
     double maxHashrate          = 0.0;
     const auto config           = d_ptr->controller->config();
@@ -678,7 +678,7 @@ void xmrig::Miner::onTimer(const Timer *)
     auto autoPause = [this](bool &state, bool pause, const char *pauseMessage, const char *activeMessage)
     {
         if ((pause && !state) || (!pause && state)) {
-            LOG_INFO("%s %s", Tags::miner(), pause ? pauseMessage : activeMessage);
+            LOG_INFO("%s %s", Tags::power(), pause ? pauseMessage : activeMessage);
 
             state = pause;
             d_ptr->auto_pause += pause ? 1 : -1;
@@ -701,7 +701,7 @@ void xmrig::Miner::onTimer(const Timer *)
 
 
 #ifdef XMRIG_FEATURE_API
-void xmrig::Miner::onRequest(IApiRequest &request)
+void xmrig::PoWer::onRequest(IApiRequest &request)
 {
     if (request.method() == IApiRequest::METHOD_GET) {
         if (request.type() == IApiRequest::REQ_SUMMARY) {
@@ -742,7 +742,7 @@ void xmrig::Miner::onRequest(IApiRequest &request)
 
 
 #ifdef XMRIG_ALGO_RANDOMX
-void xmrig::Miner::onDatasetReady()
+void xmrig::PoWer::onDatasetReady()
 {
     if (!Rx::isReady(job())) {
         return;

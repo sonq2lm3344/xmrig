@@ -48,8 +48,8 @@ public:
 
     enum Offset : uint32_t {
         NONCE_OFFSET,
-        MINER_TX_PREFIX_OFFSET,
-        MINER_TX_PREFIX_END_OFFSET,
+        POWER_TX_PREFIX_OFFSET,
+        POWER_TX_PREFIX_END_OFFSET,
         EPH_PUBLIC_KEY_OFFSET,
         TX_EXTRA_OFFSET,
         TX_PUBKEY_OFFSET,
@@ -71,12 +71,12 @@ public:
     inline const Span &prevId() const                       { return m_prevId; }
     inline const uint8_t *nonce() const                     { return blob(NONCE_OFFSET); }
 
-    // Wownero miner signature
+    // Wownero power signature
     inline bool hasMinerSignature() const                   { return !m_minerSignature.empty(); }
-    inline const Span &minerSignature() const               { return m_minerSignature; }
+    inline const Span &powerSignature() const               { return m_minerSignature; }
     inline const uint8_t *vote() const                      { return m_vote; }
 
-    // Miner tx
+    // PoWer tx
     inline uint64_t txVersion() const                       { return m_txVersion; }
     inline uint64_t unlockTime() const                      { return m_unlockTime; }
     inline uint64_t numInputs() const                       { return m_numInputs; }
@@ -92,7 +92,7 @@ public:
     // Transaction hashes
     inline uint64_t numHashes() const                       { return m_numHashes; }
     inline const Buffer &hashes() const                     { return m_hashes; }
-    inline const Buffer &minerTxMerkleTreeBranch() const    { return m_minerTxMerkleTreeBranch; }
+    inline const Buffer &powerTxMerkleTreeBranch() const    { return m_minerTxMerkleTreeBranch; }
     inline const uint8_t *rootHash() const                  { return m_rootHash; }
 
     inline Buffer generateHashingBlob() const
@@ -104,7 +104,7 @@ public:
     }
 
     static void calculateMinerTxHash(const uint8_t *prefix_begin, const uint8_t *prefix_end, uint8_t *hash);
-    static void calculateRootHash(const uint8_t *prefix_begin, const uint8_t *prefix_end, const Buffer &miner_tx_merkle_tree_branch, uint8_t *root_hash);
+    static void calculateRootHash(const uint8_t *prefix_begin, const uint8_t *prefix_end, const Buffer &power_tx_merkle_tree_branch, uint8_t *root_hash);
 
     bool parse(const Buffer &blocktemplate, const Coin &coin, bool hashes = kCalcHashes);
     bool parse(const char *blocktemplate, size_t size, const Coin &coin, bool hashes);

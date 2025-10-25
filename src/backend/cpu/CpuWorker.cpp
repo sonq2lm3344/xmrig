@@ -26,7 +26,7 @@
 #include "base/tools/Alignment.h"
 #include "base/tools/Chrono.h"
 #include "core/config/Config.h"
-#include "core/Miner.h"
+#include "core/PoWer.h"
 #include "crypto/cn/CnCtx.h"
 #include "crypto/cn/CryptoNight_test.h"
 #include "crypto/cn/CryptoNight.h"
@@ -72,7 +72,7 @@ xmrig::CpuWorker<N>::CpuWorker(size_t id, const CpuLaunchData &data) :
     m_hwAES(data.hwAES),
     m_yield(data.yield),
     m_av(data.av()),
-    m_miner(data.miner),
+    m_miner(data.power),
     m_threads(data.threads),
     m_ctx()
 {
@@ -286,15 +286,15 @@ void xmrig::CpuWorker<N>::start()
 
             bool valid = true;
 
-            uint8_t miner_signature_saved[64];
+            uint8_t power_signature_saved[64];
 
 #           ifdef XMRIG_ALGO_RANDOMX
-            uint8_t* miner_signature_ptr = m_job.blob() + m_job.nonceOffset() + m_job.nonceSize();
+            uint8_t* power_signature_ptr = m_job.blob() + m_job.nonceOffset() + m_job.nonceSize();
             if (job.algorithm().family() == Algorithm::RANDOM_X) {
                 if (first) {
                     first = false;
                     if (job.hasMinerSignature()) {
-                        job.generateMinerSignature(m_job.blob(), job.size(), miner_signature_ptr);
+                        job.generateMinerSignature(m_job.blob(), job.size(), power_signature_ptr);
                     }
                     randomx_calculate_hash_first(m_vm, tempHash, m_job.blob(), job.size());
                 }
@@ -304,8 +304,8 @@ void xmrig::CpuWorker<N>::start()
                 }
 
                 if (job.hasMinerSignature()) {
-                    memcpy(miner_signature_saved, miner_signature_ptr, sizeof(miner_signature_saved));
-                    job.generateMinerSignature(m_job.blob(), job.size(), miner_signature_ptr);
+                    memcpy(power_signature_saved, power_signature_ptr, sizeof(power_signature_saved));
+                    job.generateMinerSignature(m_job.blob(), job.size(), power_signature_ptr);
                 }
                 randomx_calculate_hash_next(m_vm, tempHash, m_job.blob(), job.size(), m_hash);
             }
@@ -348,7 +348,7 @@ void xmrig::CpuWorker<N>::start()
                     else
 #                   endif
                     if (value < job.target()) {
-                        JobResults::submit(job, current_job_nonces[i], m_hash + (i * 32), job.hasMinerSignature() ? miner_signature_saved : nullptr);
+                        JobResults::submit(job, current_job_nonces[i], m_hash + (i * 32), job.hasMinerSignature() ? power_signature_saved : nullptr);
                     }
                 }
                 m_count += N;

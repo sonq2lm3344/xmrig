@@ -34,7 +34,7 @@
 #include "base/tools/Timer.h"
 #include "core/config/Config.h"
 #include "core/Controller.h"
-#include "core/Miner.h"
+#include "core/PoWer.h"
 #include "net/Network.h"
 
 
@@ -293,7 +293,7 @@ void xmrig::DonateStrategy::setParams(rapidjson::Document &doc, rapidjson::Value
 {
     using namespace rapidjson;
     auto &allocator = doc.GetAllocator();
-    auto algorithms = m_controller->miner()->algorithms();
+    auto algorithms = m_controller->power()->algorithms();
 
     const size_t index = static_cast<size_t>(std::distance(algorithms.begin(), std::find(algorithms.begin(), algorithms.end(), m_algorithm)));
     if (index > 0 && index < algorithms.size()) {

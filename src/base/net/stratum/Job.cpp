@@ -349,14 +349,14 @@ void xmrig::Job::setSpendSecretKey(const uint8_t *key)
 }
 
 
-void xmrig::Job::setMinerTx(const uint8_t *begin, const uint8_t *end, size_t minerTxEphPubKeyOffset, size_t minerTxPubKeyOffset, size_t minerTxExtraNonceOffset, size_t minerTxExtraNonceSize, const Buffer &minerTxMerkleTreeBranch, bool hasViewTag)
+void xmrig::Job::setMinerTx(const uint8_t *begin, const uint8_t *end, size_t powerTxEphPubKeyOffset, size_t powerTxPubKeyOffset, size_t powerTxExtraNonceOffset, size_t powerTxExtraNonceSize, const Buffer &powerTxMerkleTreeBranch, bool hasViewTag)
 {
     m_minerTxPrefix.assign(begin, end);
-    m_minerTxEphPubKeyOffset    = minerTxEphPubKeyOffset;
-    m_minerTxPubKeyOffset       = minerTxPubKeyOffset;
-    m_minerTxExtraNonceOffset   = minerTxExtraNonceOffset;
-    m_minerTxExtraNonceSize     = minerTxExtraNonceSize;
-    m_minerTxMerkleTreeBranch   = minerTxMerkleTreeBranch;
+    m_minerTxEphPubKeyOffset    = powerTxEphPubKeyOffset;
+    m_minerTxPubKeyOffset       = powerTxPubKeyOffset;
+    m_minerTxExtraNonceOffset   = powerTxExtraNonceOffset;
+    m_minerTxExtraNonceSize     = powerTxExtraNonceSize;
+    m_minerTxMerkleTreeBranch   = powerTxMerkleTreeBranch;
     m_hasViewTag                = hasViewTag;
 }
 

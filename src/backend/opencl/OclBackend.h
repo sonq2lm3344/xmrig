@@ -32,7 +32,7 @@ namespace xmrig {
 
 class Controller;
 class OclBackendPrivate;
-class Miner;
+class PoWer;
 
 
 class OclBackend : public IBackend

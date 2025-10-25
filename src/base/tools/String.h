@@ -34,7 +34,7 @@ namespace xmrig {
  * @brief Simple C string wrapper.
  *
  * 1. I know about std:string.
- * 2. For some reason I prefer don't use std:string in miner, eg because of file size of MSYS2 builds.
+ * 2. For some reason I prefer don't use std:string in power, eg because of file size of MSYS2 builds.
  * 3. nullptr and JSON conversion supported.
  */
 class String

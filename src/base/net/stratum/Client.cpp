@@ -203,8 +203,8 @@ int64_t xmrig::Client::submit(const JobResult &result)
     Cvt::toHex(nonce, sizeof(uint32_t) * 2 + 1, reinterpret_cast<const uint8_t *>(&result.nonce), sizeof(uint32_t));
     Cvt::toHex(data, 65, result.result(), 32);
 
-    if (result.minerSignature()) {
-        Cvt::toHex(signature, 129, result.minerSignature(), 64);
+    if (result.powerSignature()) {
+        Cvt::toHex(signature, 129, result.powerSignature(), 64);
     }
 #   endif
 
@@ -218,7 +218,7 @@ int64_t xmrig::Client::submit(const JobResult &result)
     params.AddMember("result", StringRef(data), allocator);
 
 #   ifndef XMRIG_PROXY_PROJECT
-    if (result.minerSignature()) {
+    if (result.powerSignature()) {
         params.AddMember("sig", StringRef(signature), allocator);
     }
 #   else

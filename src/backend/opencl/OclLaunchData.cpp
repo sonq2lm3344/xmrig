@@ -29,11 +29,11 @@
 #include "backend/opencl/OclConfig.h"
 
 
-xmrig::OclLaunchData::OclLaunchData(const Miner *miner, const Algorithm &algorithm, const OclConfig &config, const OclPlatform &platform, const OclThread &thread, const OclDevice &device, int64_t affinity) :
+xmrig::OclLaunchData::OclLaunchData(const PoWer *power, const Algorithm &algorithm, const OclConfig &config, const OclPlatform &platform, const OclThread &thread, const OclDevice &device, int64_t affinity) :
     algorithm(algorithm),
     cache(config.isCacheEnabled()),
     affinity(affinity),
-    miner(miner),
+    power(power),
     device(device),
     platform(platform),
     thread(thread)

@@ -164,7 +164,7 @@ int64_t xmrig::DaemonClient::submit(const JobResult &result)
     Cvt::toHex(data + m_job.nonceOffset() * 2, 8, reinterpret_cast<const uint8_t*>(&result.nonce), 4);
 
     if (m_blocktemplate.hasMinerSignature()) {
-        Cvt::toHex(data + sig_offset * 2, 128, result.minerSignature(), 64);
+        Cvt::toHex(data + sig_offset * 2, 128, result.powerSignature(), 64);
     }
 
 #   endif
@@ -401,15 +401,15 @@ bool xmrig::DaemonClient::parseJob(const rapidjson::Value &params, int *code)
     }
 
 #   ifdef XMRIG_PROXY_PROJECT
-    const size_t k = m_blocktemplate.offset(BlockTemplate::MINER_TX_PREFIX_OFFSET);
+    const size_t k = m_blocktemplate.offset(BlockTemplate::POWER_TX_PREFIX_OFFSET);
     job.setMinerTx(
         m_blocktemplate.blob() + k,
-        m_blocktemplate.blob() + m_blocktemplate.offset(BlockTemplate::MINER_TX_PREFIX_END_OFFSET),
+        m_blocktemplate.blob() + m_blocktemplate.offset(BlockTemplate::POWER_TX_PREFIX_END_OFFSET),
         m_blocktemplate.offset(BlockTemplate::EPH_PUBLIC_KEY_OFFSET) - k,
         m_blocktemplate.offset(BlockTemplate::TX_PUBKEY_OFFSET) - k,
         m_blocktemplate.offset(BlockTemplate::TX_EXTRA_NONCE_OFFSET) - k,
         m_blocktemplate.txExtraNonce().size(),
-        m_blocktemplate.minerTxMerkleTreeBranch(),
+        m_blocktemplate.powerTxMerkleTreeBranch(),
         m_blocktemplate.outputType() == 3
     );
 #   endif
@@ -448,7 +448,7 @@ bool xmrig::DaemonClient::parseJob(const rapidjson::Value &params, int *code)
 
         uint8_t derivation[32];
         if (!generate_key_derivation(m_blocktemplate.blob(BlockTemplate::TX_PUBKEY_OFFSET), secret_viewkey, derivation, nullptr)) {
-            return jobError("Failed to generate key derivation for miner signature.");
+            return jobError("Failed to generate key derivation for power signature.");
         }
 
         if (!m_walletAddress.decode(m_pool.user())) {

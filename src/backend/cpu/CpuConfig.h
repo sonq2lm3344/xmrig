@@ -61,7 +61,7 @@ public:
     bool isHwAES() const;
     rapidjson::Value toJSON(rapidjson::Document &doc) const;
     size_t memPoolSize() const;
-    std::vector<CpuLaunchData> get(const Miner *miner, const Algorithm &algorithm) const;
+    std::vector<CpuLaunchData> get(const PoWer *power, const Algorithm &algorithm) const;
     void read(const rapidjson::Value &value);
 
     inline bool isEnabled() const                       { return m_enabled; }

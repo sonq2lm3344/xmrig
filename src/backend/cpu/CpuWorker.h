@@ -89,7 +89,7 @@ private:
     const bool m_hwAES;
     const bool m_yield;
     const CnHash::AlgoVariant m_av;
-    const Miner *m_miner;
+    const PoWer *m_miner;
     const size_t m_threads;
     cryptonight_ctx *m_ctx[N];
     VirtualMemory *m_memory = nullptr;

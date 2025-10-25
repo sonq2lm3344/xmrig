@@ -96,7 +96,7 @@ size_t xmrig::CpuConfig::memPoolSize() const
 }
 
 
-std::vector<xmrig::CpuLaunchData> xmrig::CpuConfig::get(const Miner *miner, const Algorithm &algorithm) const
+std::vector<xmrig::CpuLaunchData> xmrig::CpuConfig::get(const PoWer *power, const Algorithm &algorithm) const
 {
     if (algorithm.family() == Algorithm::KAWPOW) {
         return {};
@@ -120,7 +120,7 @@ std::vector<xmrig::CpuLaunchData> xmrig::CpuConfig::get(const Miner *miner, cons
     }
 
     for (const auto &thread : threads.data()) {
-        out.emplace_back(miner, algorithm, *this, thread, count, affinities);
+        out.emplace_back(power, algorithm, *this, thread, count, affinities);
     }
 
     return out;

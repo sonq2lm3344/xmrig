@@ -33,7 +33,7 @@
 #include "base/tools/Timer.h"
 #include "core/config/Config.h"
 #include "core/Controller.h"
-#include "core/Miner.h"
+#include "core/PoWer.h"
 #include "net/JobResult.h"
 #include "net/JobResults.h"
 #include "net/strategies/DonateStrategy.h"
@@ -189,7 +189,7 @@ void xmrig::Network::onLogin(IStrategy *, IClient *client, rapidjson::Document &
     using namespace rapidjson;
     auto &allocator = doc.GetAllocator();
 
-    Algorithms algorithms     = m_controller->miner()->algorithms();
+    Algorithms algorithms     = m_controller->power()->algorithms();
     const Algorithm algorithm = client->pool().algorithm();
     if (algorithm.isValid()) {
         const size_t index = static_cast<size_t>(std::distance(algorithms.begin(), std::find(algorithms.begin(), algorithms.end(), algorithm)));
@@ -218,7 +218,7 @@ void xmrig::Network::onPause(IStrategy *strategy)
     if (!m_strategy->isActive()) {
         LOG_ERR("%s " RED("no active pools, stop mining"), Tags::network());
 
-        return m_controller->miner()->pause();
+        return m_controller->power()->pause();
     }
 }
 
@@ -241,7 +241,7 @@ void xmrig::Network::onResultAccepted(IStrategy *, IClient *, const SubmitResult
 
 void xmrig::Network::onVerifyAlgorithm(IStrategy *, const IClient *, const Algorithm &algorithm, bool *ok)
 {
-    if (!m_controller->miner()->isEnabled(algorithm)) {
+    if (!m_controller->power()->isEnabled(algorithm)) {
         *ok = false;
 
         return;
@@ -295,7 +295,7 @@ void xmrig::Network::setJob(IClient *client, const Job &job, bool donate)
         static_cast<DonateStrategy *>(m_donate)->update(client, job);
     }
 
-    m_controller->miner()->setJob(job, donate);
+    m_controller->power()->setJob(job, donate);
 }
 
 

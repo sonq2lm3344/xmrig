@@ -29,13 +29,13 @@ namespace xmrig {
 
 
 class CudaDevice;
-class Miner;
+class PoWer;
 
 
 class CudaLaunchData
 {
 public:
-    CudaLaunchData(const Miner *miner, const Algorithm &algorithm, const CudaThread &thread, const CudaDevice &device);
+    CudaLaunchData(const PoWer *power, const Algorithm &algorithm, const CudaThread &thread, const CudaDevice &device);
 
     bool isEqual(const CudaLaunchData &other) const;
 
@@ -50,7 +50,7 @@ public:
     const CudaDevice &device;
     const CudaThread thread;
     const int64_t affinity;
-    const Miner *miner;
+    const PoWer *power;
     const uint32_t benchSize = 0;
 };
 

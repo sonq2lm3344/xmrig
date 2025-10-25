@@ -36,17 +36,17 @@ namespace xmrig {
 
 class Controller;
 class Job;
-class MinerPrivate;
+class PoWerPrivate;
 class IBackend;
 
 
-class Miner : public ITimerListener, public IBaseListener, public IApiListener, public IRxListener
+class PoWer : public ITimerListener, public IBaseListener, public IApiListener, public IRxListener
 {
 public:
-    XMRIG_DISABLE_COPY_MOVE_DEFAULT(Miner)
+    XMRIG_DISABLE_COPY_MOVE_DEFAULT(PoWer)
 
-    Miner(Controller *controller);
-    ~Miner() override;
+    PoWer(Controller *controller);
+    ~PoWer() override;
 
     bool isEnabled() const;
     bool isEnabled(const Algorithm &algorithm) const;
@@ -72,7 +72,7 @@ protected:
 #   endif
 
 private:
-    MinerPrivate *d_ptr;
+    PoWerPrivate *d_ptr;
 };
 
 

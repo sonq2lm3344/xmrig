@@ -38,13 +38,13 @@ namespace xmrig {
 
 class CpuConfig;
 class CpuThread;
-class Miner;
+class PoWer;
 
 
 class CpuLaunchData
 {
 public:
-    CpuLaunchData(const Miner *miner, const Algorithm &algorithm, const CpuConfig &config, const CpuThread &thread, size_t threads, const std::vector<int64_t>& affinities);
+    CpuLaunchData(const PoWer *power, const Algorithm &algorithm, const CpuConfig &config, const CpuThread &thread, size_t threads, const std::vector<int64_t>& affinities);
 
     bool isEqual(const CpuLaunchData &other) const;
     CnHash::AlgoVariant av() const;
@@ -63,7 +63,7 @@ public:
     const bool yield;
     const int priority;
     const int64_t affinity;
-    const Miner *miner;
+    const PoWer *power;
     const size_t threads;
     const uint32_t intensity;
     const std::vector<int64_t> affinities;

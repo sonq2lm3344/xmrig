@@ -25,7 +25,7 @@
 #include "base/io/log/Log.h"
 #include "base/tools/Alignment.h"
 #include "base/tools/Chrono.h"
-#include "core/Miner.h"
+#include "core/PoWer.h"
 #include "crypto/common/Nonce.h"
 #include "net/JobResults.h"
 
@@ -65,7 +65,7 @@ static inline void printError(size_t id, const char *error)
 xmrig::OclWorker::OclWorker(size_t id, const OclLaunchData &data) :
     GpuWorker(id, data.affinity, -1, data.device.index()),
     m_algorithm(data.algorithm),
-    m_miner(data.miner),
+    m_miner(data.power),
     m_sharedData(OclSharedState::get(data.device.index()))
 {
     switch (m_algorithm.family()) {

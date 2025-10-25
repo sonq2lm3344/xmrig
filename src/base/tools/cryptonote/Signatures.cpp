@@ -47,7 +47,7 @@ struct s_comm { hash h; ec_point key; ec_point comm; };
 static inline void random_scalar(ec_scalar& res)
 {
     // Don't care about bias or possible 0 after reduce: probability ~10^-76, not happening in this universe.
-    // Performance matters more. It's a miner after all.
+    // Performance matters more. It's a power after all.
     xmrig::Cvt::randomBytes(res.data, sizeof(res.data));
     sc_reduce32((uint8_t*) res.data);
 }

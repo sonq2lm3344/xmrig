@@ -32,7 +32,7 @@ namespace xmrig {
 
 class Controller;
 class CpuBackendPrivate;
-class Miner;
+class PoWer;
 
 
 class CpuBackend : public IBackend

@@ -71,7 +71,7 @@ rapidjson::Value xmrig::CudaConfig::toJSON(rapidjson::Document &doc) const
 }
 
 
-std::vector<xmrig::CudaLaunchData> xmrig::CudaConfig::get(const Miner *miner, const Algorithm &algorithm, const std::vector<CudaDevice> &devices) const
+std::vector<xmrig::CudaLaunchData> xmrig::CudaConfig::get(const PoWer *power, const Algorithm &algorithm, const std::vector<CudaDevice> &devices) const
 {
     auto deviceIndex = [&devices](uint32_t index) -> int {
         for (uint32_t i = 0; i < devices.size(); ++i) {
@@ -99,7 +99,7 @@ std::vector<xmrig::CudaLaunchData> xmrig::CudaConfig::get(const Miner *miner, co
             continue;
         }
 
-        out.emplace_back(miner, algorithm, thread, devices[static_cast<size_t>(index)]);
+        out.emplace_back(power, algorithm, thread, devices[static_cast<size_t>(index)]);
     }
 
     return out;

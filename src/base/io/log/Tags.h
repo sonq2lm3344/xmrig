@@ -37,7 +37,7 @@ public:
 
 #   ifdef XMRIG_MINER_PROJECT
     static const char *cpu();
-    static const char *miner();
+    static const char *power();
 #   ifdef XMRIG_ALGO_RANDOMX
     static const char *randomx();
 #   endif

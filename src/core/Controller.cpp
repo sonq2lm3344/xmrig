@@ -19,7 +19,7 @@
 #include "core/Controller.h"
 #include "backend/cpu/Cpu.h"
 #include "core/config/Config.h"
-#include "core/Miner.h"
+#include "core/PoWer.h"
 #include "crypto/common/VirtualMemory.h"
 #include "net/Network.h"
 
@@ -66,7 +66,7 @@ void xmrig::Controller::start()
 {
     Base::start();
 
-    m_miner = std::make_shared<Miner>(this);
+    m_miner = std::make_shared<PoWer>(this);
 
     network()->connect();
 }
@@ -83,7 +83,7 @@ void xmrig::Controller::stop()
 }
 
 
-xmrig::Miner *xmrig::Controller::miner() const
+xmrig::PoWer *xmrig::Controller::power() const
 {
     assert(m_miner);
 
@@ -101,6 +101,6 @@ xmrig::Network *xmrig::Controller::network() const
 
 void xmrig::Controller::execCommand(char command) const
 {
-    miner()->execCommand(command);
+    power()->execCommand(command);
     network()->execCommand(command);
 }

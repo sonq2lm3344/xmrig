@@ -31,7 +31,7 @@ namespace xmrig {
 
 class HwApi;
 class Job;
-class Miner;
+class PoWer;
 class Network;
 
 
@@ -47,12 +47,12 @@ public:
     void start() override;
     void stop() override;
 
-    Miner *miner() const;
+    PoWer *power() const;
     Network *network() const;
     void execCommand(char command) const;
 
 private:
-    std::shared_ptr<Miner> m_miner;
+    std::shared_ptr<PoWer> m_miner;
     std::shared_ptr<Network> m_network;
 
 #   ifdef XMRIG_FEATURE_API

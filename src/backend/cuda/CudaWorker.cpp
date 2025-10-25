@@ -24,7 +24,7 @@
 #include "base/io/log/Log.h"
 #include "base/tools/Alignment.h"
 #include "base/tools/Chrono.h"
-#include "core/Miner.h"
+#include "core/PoWer.h"
 #include "crypto/common/Nonce.h"
 #include "net/JobResults.h"
 
@@ -59,7 +59,7 @@ static inline bool isReady()    { return !Nonce::isPaused() && CudaWorker::ready
 xmrig::CudaWorker::CudaWorker(size_t id, const CudaLaunchData &data) :
     GpuWorker(id, data.thread.affinity(), -1, data.device.index()),
     m_algorithm(data.algorithm),
-    m_miner(data.miner)
+    m_miner(data.power)
 {
     switch (m_algorithm.family()) {
     case Algorithm::RANDOM_X:

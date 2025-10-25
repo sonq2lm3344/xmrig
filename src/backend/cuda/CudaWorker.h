@@ -56,7 +56,7 @@ private:
     void storeStats();
 
     const Algorithm m_algorithm;
-    const Miner *m_miner;
+    const PoWer *m_miner;
     ICudaRunner *m_runner = nullptr;
     WorkerJob<1> m_job;
 };

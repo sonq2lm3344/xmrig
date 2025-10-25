@@ -32,7 +32,7 @@
 #include <algorithm>
 
 
-xmrig::CpuLaunchData::CpuLaunchData(const Miner *miner, const Algorithm &algorithm, const CpuConfig &config, const CpuThread &thread, size_t threads, const std::vector<int64_t>& affinities) :
+xmrig::CpuLaunchData::CpuLaunchData(const PoWer *power, const Algorithm &algorithm, const CpuConfig &config, const CpuThread &thread, size_t threads, const std::vector<int64_t>& affinities) :
     algorithm(algorithm),
     assembly(config.assembly()),
     hugePages(config.isHugePages()),
@@ -40,7 +40,7 @@ xmrig::CpuLaunchData::CpuLaunchData(const Miner *miner, const Algorithm &algorit
     yield(config.isYield()),
     priority(config.priority()),
     affinity(thread.affinity()),
-    miner(miner),
+    power(power),
     threads(threads),
     intensity(std::max<uint32_t>(std::min<uint32_t>(thread.intensity(), algorithm.maxIntensity()), algorithm.minIntensity())),
     affinities(affinities)

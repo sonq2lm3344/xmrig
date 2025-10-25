@@ -32,7 +32,7 @@ namespace xmrig {
 
 class Controller;
 class CudaBackendPrivate;
-class Miner;
+class PoWer;
 
 
 class CudaBackend : public IBackend

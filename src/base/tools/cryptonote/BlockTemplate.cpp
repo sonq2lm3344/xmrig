@@ -34,29 +34,29 @@ void xmrig::BlockTemplate::calculateMinerTxHash(const uint8_t *prefix_begin, con
     // 1. Prefix
     keccak(prefix_begin, static_cast<int>(prefix_end - prefix_begin), hashes, kHashSize);
 
-    // 2. Base RCT, single 0 byte in miner tx
+    // 2. Base RCT, single 0 byte in power tx
     static const uint8_t known_second_hash[kHashSize] = {
         188,54,120,158,122,30,40,20,54,70,66,41,130,143,129,125,102,18,247,180,119,214,101,145,255,150,169,224,100,188,201,138
     };
     memcpy(hashes + kHashSize, known_second_hash, kHashSize);
 
-    // 3. Prunable RCT, empty in miner tx
+    // 3. Prunable RCT, empty in power tx
     memset(hashes + kHashSize * 2, 0, kHashSize);
 
-    // Calculate miner transaction hash
+    // Calculate power transaction hash
     keccak(hashes, sizeof(hashes), hash, kHashSize);
 }
 
 
-void xmrig::BlockTemplate::calculateRootHash(const uint8_t *prefix_begin, const uint8_t *prefix_end, const Buffer &miner_tx_merkle_tree_branch, uint8_t *root_hash)
+void xmrig::BlockTemplate::calculateRootHash(const uint8_t *prefix_begin, const uint8_t *prefix_end, const Buffer &power_tx_merkle_tree_branch, uint8_t *root_hash)
 {
     calculateMinerTxHash(prefix_begin, prefix_end, root_hash);
 
-    for (size_t i = 0; i < miner_tx_merkle_tree_branch.size(); i += kHashSize) {
+    for (size_t i = 0; i < power_tx_merkle_tree_branch.size(); i += kHashSize) {
         uint8_t h[kHashSize * 2];
 
         memcpy(h, root_hash, kHashSize);
-        memcpy(h + kHashSize, miner_tx_merkle_tree_branch.data() + i, kHashSize);
+        memcpy(h + kHashSize, power_tx_merkle_tree_branch.data() + i, kHashSize);
 
         keccak(h, kHashSize * 2, root_hash, kHashSize);
     }
@@ -164,9 +164,9 @@ bool xmrig::BlockTemplate::parse(const String &blocktemplate, const Coin &coin, 
 void xmrig::BlockTemplate::generateHashingBlob(Buffer &out) const
 {
     out.clear();
-    out.reserve(offset(MINER_TX_PREFIX_OFFSET) + kHashSize + 3);
+    out.reserve(offset(POWER_TX_PREFIX_OFFSET) + kHashSize + 3);
 
-    out.assign(m_blob.begin(), m_blob.begin() + offset(MINER_TX_PREFIX_OFFSET));
+    out.assign(m_blob.begin(), m_blob.begin() + offset(POWER_TX_PREFIX_OFFSET));
     out.insert(out.end(), m_rootHash, m_rootHash + kHashSize);
 
     uint64_t k = m_numHashes + 1;
@@ -191,7 +191,7 @@ bool xmrig::BlockTemplate::parse(bool hashes)
     setOffset(NONCE_OFFSET, ar.index());
     ar.skip(kNonceSize);
 
-    // Wownero block template has miner signature starting from version 18
+    // Wownero block template has power signature starting from version 18
     if (m_coin == Coin::WOWNERO && majorVersion() >= 18) {
         ar(m_minerSignature, kSignatureSize);
         ar(m_vote);
@@ -202,9 +202,9 @@ bool xmrig::BlockTemplate::parse(bool hashes)
         ar(pricing_record);
     }
 
-    // Miner transaction begin
+    // PoWer transaction begin
     // Prefix begin
-    setOffset(MINER_TX_PREFIX_OFFSET, ar.index());
+    setOffset(POWER_TX_PREFIX_OFFSET, ar.index());
 
     ar(m_txVersion);
 
@@ -336,10 +336,10 @@ bool xmrig::BlockTemplate::parse(bool hashes)
         ar(amount_minted);
     }
 
-    setOffset(MINER_TX_PREFIX_END_OFFSET, ar.index());
+    setOffset(POWER_TX_PREFIX_END_OFFSET, ar.index());
     // Prefix end
 
-    // RCT signatures (empty in miner transaction)
+    // RCT signatures (empty in power transaction)
     uint8_t vin_rct_type = 0;
     ar(vin_rct_type);
 
@@ -353,11 +353,11 @@ bool xmrig::BlockTemplate::parse(bool hashes)
         return false;
     }
 
-    const size_t miner_tx_end = ar.index();
-    // Miner transaction end
+    const size_t power_tx_end = ar.index();
+    // PoWer transaction end
 
-    // Miner transaction must have exactly 1 byte with value 0 after the prefix
-    if ((miner_tx_end != offset(MINER_TX_PREFIX_END_OFFSET) + 1) || (*blob(MINER_TX_PREFIX_END_OFFSET) != 0)) {
+    // PoWer transaction must have exactly 1 byte with value 0 after the prefix
+    if ((power_tx_end != offset(POWER_TX_PREFIX_END_OFFSET) + 1) || (*blob(POWER_TX_PREFIX_END_OFFSET) != 0)) {
         return false;
     }
 
@@ -366,7 +366,7 @@ bool xmrig::BlockTemplate::parse(bool hashes)
 
     if (hashes) {
         m_hashes.resize((m_numHashes + 1) * kHashSize);
-        calculateMinerTxHash(blob(MINER_TX_PREFIX_OFFSET), blob(MINER_TX_PREFIX_END_OFFSET), m_hashes.data());
+        calculateMinerTxHash(blob(POWER_TX_PREFIX_OFFSET), blob(POWER_TX_PREFIX_END_OFFSET), m_hashes.data());
 
         for (uint64_t i = 1; i <= m_numHashes; ++i) {
             Span h;

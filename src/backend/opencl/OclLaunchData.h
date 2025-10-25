@@ -42,13 +42,13 @@ namespace xmrig {
 
 
 class OclConfig;
-class Miner;
+class PoWer;
 
 
 class OclLaunchData
 {
 public:
-    OclLaunchData(const Miner *miner, const Algorithm &algorithm, const OclConfig &config, const OclPlatform &platform, const OclThread &thread, const OclDevice &device, int64_t affinity);
+    OclLaunchData(const PoWer *power, const Algorithm &algorithm, const OclConfig &config, const OclPlatform &platform, const OclThread &thread, const OclDevice &device, int64_t affinity);
 
     bool isEqual(const OclLaunchData &other) const;
 
@@ -63,7 +63,7 @@ public:
     const Algorithm algorithm;
     const bool cache;
     const int64_t affinity;
-    const Miner *miner;
+    const PoWer *power;
     const OclDevice device;
     const OclPlatform platform;
     const OclThread thread;

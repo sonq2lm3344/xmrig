@@ -62,9 +62,9 @@ const char *xmrig::Tags::cpu()
 }
 
 
-const char *xmrig::Tags::miner()
+const char *xmrig::Tags::power()
 {
-    static const char *tag = MAGENTA_BG_BOLD(WHITE_BOLD_S " miner   ");
+    static const char *tag = MAGENTA_BG_BOLD(WHITE_BOLD_S " power   ");
 
     return tag;
 }
